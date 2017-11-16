@@ -1,4 +1,4 @@
-# CHIP4 Debian
+# CHIP4 Debian - Docker branch
 
-This Gitlab project builds a Debian image for CHIP4.
+This branch builds a Docker image used to build .deb packages and the Debian rootfs.
 
