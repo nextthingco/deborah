@@ -1,13 +1,15 @@
 ##!/bin/bash
 
-LINUX_DPK_FILE=$PWD/.linux_dpk
-echo "$LINUX_DEPLOY_PRIVATE_KEY" >"${LINUX_DPK_FILE}"
-chmod 0600 "${LINUX_DPK_FILE}"
+which ssh-agent || echo "need to install ssh-agent" && ( apt-get update -y && apt-get install openssh-client -y )
+eval $(ssh-agent -s)
+ssh-add <(echo "$SSH_PRIVATE_KEY")
 
-export GIT_SSH_COMMAND="ssh -i ${LINUX_DPK_FILE} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+#LINUX_DPK_FILE=$PWD/.linux_dpk
+#echo "$LINUX_DEPLOY_PRIVATE_KEY" >"${LINUX_DPK_FILE}"
+#chmod 0600 "${LINUX_DPK_FILE}"
 
-ls -l "${LINUX_DPK_FILE}"
-cat ${LINUX_DPK_FILE}
+export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+#export GIT_SSH_COMMAND="ssh -i ${LINUX_DPK_FILE} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 LINUX_BRANCH=${LINUX_BRANCH:-chip4-4.13.y}
   LINUX_REPO=${LINUX_REPO:-git@github.com:nextthingco/chip4-linux}
