@@ -22,6 +22,9 @@ export CONCURRENCY_LEVEL=$(( $(nproc) * 2 ))
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
 
+export DEBFULLNAME="Next Thing Co."
+export DEBEMAIL="software@nextthing.co"
+ 
 ## KERNEL
 function linux() {
     git clone --branch ${LINUX_BRANCH} --single-branch --depth 1 ${LINUX_REPO} "${LINUX_SRCDIR}"
@@ -31,9 +34,7 @@ function linux() {
     git clean -xfd .
     git checkout .
     
-    export DEBFULLNAME="Next Thing Co."
-    export DEBEMAIL="software@nextthing.co"
-    
+   
     export KBUILD_DEBARCH=${ARCH}
     export KDEB_CHANGELOG_DIST=stretch
     export LOCALVERSION=-chip4
