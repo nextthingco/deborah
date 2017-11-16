@@ -28,9 +28,8 @@ export DEBEMAIL="software@nextthing.co"
 ## KERNEL
 function linux() {
     git clone --branch ${LINUX_BRANCH} --single-branch --depth 1 ${LINUX_REPO} "${LINUX_SRCDIR}"
-    return
-    pushd "${LINUX_SRCDIR}"
 
+    pushd "${LINUX_SRCDIR}"
     git clean -xfd .
     git checkout .
     
