@@ -8,26 +8,31 @@ export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChec
 
 LINUX_BRANCH=${LINUX_BRANCH:-chip4-4.13.y}
   LINUX_REPO=${LINUX_REPO:-git@github.com:nextthingco/chip4-linux}
-LINUX_CONFIG=defconfig
+LINUX_CONFIG=${LINUX_CONFIG:-chip4_defconfig}
+LINUX_SRCDIR="$PWD/linux"
 
-#git clone -b debian https://github.com/nextthingco/RTL8723DS
+RTL8723DS_BRANCH=${RTL8723DS_BRANCH:-master}
+  RTL8723DS_REPO=${RTL8723DS_REPO:-https://github.com/lwfinger/rtl8723ds}
+RTL8723DS_SRCDIR="$PWD/rtl8723ds"
+RTL8723DS_PATCHDIR="$PWD/patches/rtl8723ds"
 #git clone -b debian https://github.com/nextthingco/rtl8723ds_bt
 
 BUILD_NUMBER=2
+export CONCURRENCY_LEVEL=$(( $(nproc) * 2 ))
+export ARCH=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
 
 ## KERNEL
 function linux() {
-    git clone --branch ${LINUX_BRANCH} --single-branch --depth 1 ${LINUX_REPO} linux
-    pushd linux
+    git clone --branch ${LINUX_BRANCH} --single-branch --depth 1 ${LINUX_REPO} "${LINUX_SRCDIR}"
+    pushd "${LINUX_SRCDIR}"
+
     git clean -xfd .
     git checkout .
     
     export DEBFULLNAME="Next Thing Co."
     export DEBEMAIL="software@nextthing.co"
-    export CONCURRENCY_LEVEL=$(( $(nproc) * 2 ))
     
-    export ARCH=arm64
-    export CROSS_COMPILE=aarch64-linux-gnu-
     export KBUILD_DEBARCH=${ARCH}
     export KDEB_CHANGELOG_DIST=stretch
     export LOCALVERSION=-chip4
@@ -46,23 +51,23 @@ function linux() {
 
 ## WIFI
 function wifi() {
-    export LINUX_SRCDIR="$(pwd)/linux"
-    export RTL8723DS_SRCDIR="$(pwd)/RTL8723DS"
-    export BUILDDIR=$RTL8723DS_SRCDIR/build
-    export CONCURRENCY_LEVEL=$(( $(nproc) * 2 ))
+    git clone --branch ${RTL8723DS_BRANCH} --single-branch --depth 1 ${RTL8723DS_REPO} "${RTL8723DS_SRCDIR}"
+
+    export BUILDDIR="${RTL8723DS_SRCDIR}/build"
     export RTL_VER=$(cd $RTL8723DS_SRCDIR; dpkg-parsechangelog --show-field Version)
     
     pushd $RTL8723DS_SRCDIR
     git clean -xfd .
     git checkout .
+
+    git am "$RTL8723DS_PATCHDIR"/*
     
     dpkg-buildpackage -A -uc -us -nc
     sudo dpkg -i ../rtl8723ds-mp-driver-source_${RTL_VER}_all.deb
     
     mkdir -p $BUILDDIR/usr_src
-    export CC=arm-linux-gnueabihf-gcc
-    export $(dpkg-architecture -aarmhf)
-    export CROSS_COMPILE=arm-linux-gnueabihf-
+    export CC=${CROSS_COMPILE}-gcc
+    export $(dpkg-architecture -a${ARCH})
     export KERNEL_VER=$(cd $LINUX_SRCDIR; make kernelversion)
     
     cp -a /usr/src/modules/rtl8723ds-mp-driver/* $BUILDDIR
@@ -75,9 +80,7 @@ function wifi() {
         -k $LINUX_SRCDIR \
         build rtl8723ds-mp-driver-source
     
-    
-    pushd $BUILDDIR/*.deb ../
-    
+    mv $BUILDDIR/*.deb ../
     popd
 }
 
@@ -93,3 +96,4 @@ function bluetooth() {
 }
 
 linux
+wifi

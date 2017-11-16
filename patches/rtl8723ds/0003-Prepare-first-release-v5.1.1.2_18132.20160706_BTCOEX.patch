@@ -1,0 +1,479 @@
+From 470f5b1ff77c77638d2a5d5424396e837e46670b Mon Sep 17 00:00:00 2001
+From: Jason Abele <jason@nextthing.co>
+Date: Wed, 14 Dec 2016 16:43:23 -0800
+Subject: [PATCH 3/3] Prepare first release
+ v5.1.1.5_20523_20161209_BTCOEX20161208-1212
+
+---
+ debian/README.source                               |  8 ++++
+ debian/changelog                                   |  5 +++
+ debian/compat                                      |  1 +
+ debian/control                                     | 41 ++++++++++++++++++
+ debian/control.modules.in                          | 25 +++++++++++
+ ..._install-target-and-use-depmod-selected-b.patch | 29 +++++++++++++
+ debian/patches/series                              |  1 +
+ debian/rtl8723ds-mp-driver-common.README.Debian    | 13 ++++++
+ debian/rtl8723ds-mp-driver-common.modprobe         |  3 ++
+ debian/rtl8723ds-mp-driver-common.postinst         | 44 +++++++++++++++++++
+ debian/rtl8723ds-mp-driver-dkms.README.Debian      | 18 ++++++++
+ debian/rtl8723ds-mp-driver-dkms.dkms               |  7 +++
+ debian/rtl8723ds-mp-driver-dkms.modprobe           |  2 +
+ debian/rtl8723ds-mp-driver-source.NEWS             |  3 ++
+ debian/rtl8723ds-mp-driver-source.README.Debian    | 23 ++++++++++
+ debian/rules                                       | 49 +++++++++++++++++++++
+ debian/rules.modules                               | 50 ++++++++++++++++++++++
+ debian/source/format                               |  1 +
+ 18 files changed, 323 insertions(+)
+ create mode 100644 debian/README.source
+ create mode 100644 debian/changelog
+ create mode 100644 debian/compat
+ create mode 100644 debian/control
+ create mode 100644 debian/control.modules.in
+ create mode 100644 debian/patches/0001-Add-modules_install-target-and-use-depmod-selected-b.patch
+ create mode 100644 debian/patches/series
+ create mode 100644 debian/rtl8723ds-mp-driver-common.README.Debian
+ create mode 100644 debian/rtl8723ds-mp-driver-common.modprobe
+ create mode 100644 debian/rtl8723ds-mp-driver-common.postinst
+ create mode 100644 debian/rtl8723ds-mp-driver-dkms.README.Debian
+ create mode 100644 debian/rtl8723ds-mp-driver-dkms.dkms
+ create mode 100644 debian/rtl8723ds-mp-driver-dkms.modprobe
+ create mode 100644 debian/rtl8723ds-mp-driver-source.NEWS
+ create mode 100644 debian/rtl8723ds-mp-driver-source.README.Debian
+ create mode 100755 debian/rules
+ create mode 100644 debian/rules.modules
+ create mode 100644 debian/source/format
+
+diff --git a/debian/README.source b/debian/README.source
+new file mode 100644
+index 0000000..b3e47d1
+--- /dev/null
++++ b/debian/README.source
+@@ -0,0 +1,8 @@
++
++README.Debian-source
++
++The source package uses quilt for the modifications of the upstream source.
++If you want to change something it is best to use the quilt approach as
++documented in
++        /usr/share/doc/quilt/README.source
++
+diff --git a/debian/changelog b/debian/changelog
+new file mode 100644
+index 0000000..52a95f4
+--- /dev/null
++++ b/debian/changelog
+@@ -0,0 +1,5 @@
++rtl8723ds-mp-driver (5.1.1.2-18132.20160706-BTCOEX20160510-0909-ntc-1) stable; urgency=low
++
++  * First release v5.1.1.5_20523_20161209_BTCOEX20161208-1212
++
++ -- Jason Abele <jason@nextthing.co>  Wed, 14 Dec 2016 16:33:27 -0800
+diff --git a/debian/compat b/debian/compat
+new file mode 100644
+index 0000000..7f8f011
+--- /dev/null
++++ b/debian/compat
+@@ -0,0 +1 @@
++7
+diff --git a/debian/control b/debian/control
+new file mode 100644
+index 0000000..1e61ed2
+--- /dev/null
++++ b/debian/control
+@@ -0,0 +1,41 @@
++Source: rtl8723ds-mp-driver
++Section: main/kernel
++Priority: optional
++Maintainer: Jason Abele <jason@nextthing.co>
++Build-Depends: debhelper (>= 8), dkms
++Standards-Version: 3.9.6
++Homepage: https://github.com/NextThingCo/RTL8723BS
++
++Package: rtl8723ds-mp-driver-common
++Architecture: all
++Depends: ${misc:Depends}
++Recommends: rtl8723ds-mp-driver-source, module-assistant
++Description: Common files for the Realtek rtl8723ds Wireless driver
++ RTL8723BS MP Driver is a device driver for the Realtek IEEE 802.11b/g/n
++ rtl8723ds SDIO wireless network card.
++ .
++ This package contains the common files.
++
++Package: rtl8723ds-mp-driver-dkms
++Architecture: all
++Depends: ${misc:Depends}
++Breaks: rtl8723ds-mp-driver-common, rtl8723ds-mp-driver-modules (<< 5.1.1.2-18132.20160706-BTCOEX20160510-0909-ntc-1), rtl8723ds-mp-driver-source
++Replaces: rtl8723ds-mp-driver-common, rtl8723ds-mp-driver-modules (<< 5.1.1.2-18132.20160706-BTCOEX20160510-0909-ntc-1), rtl8723ds-mp-driver-source
++Provides: rtl8723ds-mp-driver-modules
++Description: dkms source for the Realtek rtl8723ds Wireless driver
++ RTL8723BS MP Driver is a device driver for the Realtek IEEE 802.11b/g/n
++ rtl8723ds SDIO wireless network card.
++ .
++ This package provides the source code for the 8723ds kernel module.
++ Kernel source or headers are required to compile these modules.
++
++Package: rtl8723ds-mp-driver-source
++Architecture: all
++Depends: ${misc:Depends}, debhelper (>= 8), make, xz-utils
++Recommends: module-assistant
++Description: Source for the Realtek rtl8723ds Wireless driver
++ RTL8723BS MP Driver is a device driver for the Realtek IEEE 802.11b/g/n
++ rtl8723ds SDIO wireless network card.
++ .
++ This package provides the source code for the 8723ds kernel module.
++ Kernel source or headers are required to compile these modules.
+diff --git a/debian/control.modules.in b/debian/control.modules.in
+new file mode 100644
+index 0000000..7649722
+--- /dev/null
++++ b/debian/control.modules.in
+@@ -0,0 +1,25 @@
++Source: rtl8723ds-mp-driver
++Section: main/kernel
++Priority: optional
++Maintainer: Jason Abele <jason@nextthing.co>
++Build-Depends: debhelper (>= 8)
++Standards-Version: 3.9.4
++Homepage: https://github.com/NextThingCo/RTL8723BS
++
++Package: rtl8723ds-mp-driver-modules-_KVERS_
++Architecture: all
++Depends: linux-modules-_KVERS_ | linux-image-_KVERS_, rtl8723ds-mp-driver-common
++Provides: rtl8723ds-mp-driver-modules
++Description: rtl8723ds-mp-driver modules for Linux (kernel _KVERS_)
++ RTL8723BS MP Driver is a device driver for the Realtek IEEE 802.11b/g/n
++ rtl8723ds SDIO wireless network card.
++ .
++ This package contains the set of loadable kernel modules for the
++ rtl8723ds-mp-driver wireless network driver.
++ .
++ This package contains the compiled kernel modules for _KVERS_
++ .
++ If you have compiled your own kernel, you will most likely need to build your
++ own rtl8723ds-mp-driver-modules. The rtl8723ds-mp-driver-source package has
++ been provided for use with the Debian's module-assistant or kernel-package
++ utilities to produce a version of rtl8723ds-mp-driver-modules for your kernel.
+diff --git a/debian/patches/0001-Add-modules_install-target-and-use-depmod-selected-b.patch b/debian/patches/0001-Add-modules_install-target-and-use-depmod-selected-b.patch
+new file mode 100644
+index 0000000..794aa4c
+--- /dev/null
++++ b/debian/patches/0001-Add-modules_install-target-and-use-depmod-selected-b.patch
+@@ -0,0 +1,29 @@
++From: Jason Abele <jason@nextthing.co>
++Date: Mon, 19 Dec 2016 12:55:21 -0800
++Subject: Add modules_install target and use depmod selected by kbuild
++
++---
++ Makefile | 5 ++++-
++ 1 file changed, 4 insertions(+), 1 deletion(-)
++
++diff --git a/Makefile b/Makefile
++index be22b69..ced6164 100644
++--- a/Makefile
+++++ b/Makefile
++@@ -1849,12 +1849,15 @@ all: modules
++ modules:
++ 	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  modules
++ 
+++modules_install:
+++	$(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) -C $(KSRC) M=$(shell pwd)  INSTALL_MOD_PATH=$(PREFIX) modules_install
+++
++ strip:
++ 	$(CROSS_COMPILE)strip $(MODULE_NAME).ko --strip-unneeded
++ 
++ install:
++ 	install -p -m 644 $(MODULE_NAME).ko  $(MODDESTDIR)
++-	/sbin/depmod -a ${KVER}
+++	$(DEPMOD) -a ${KVER}
++ 
++ uninstall:
++ 	rm -f $(MODDESTDIR)/$(MODULE_NAME).ko
+diff --git a/debian/patches/series b/debian/patches/series
+new file mode 100644
+index 0000000..52dcdad
+--- /dev/null
++++ b/debian/patches/series
+@@ -0,0 +1 @@
++0001-Add-modules_install-target-and-use-depmod-selected-b.patch
+diff --git a/debian/rtl8723ds-mp-driver-common.README.Debian b/debian/rtl8723ds-mp-driver-common.README.Debian
+new file mode 100644
+index 0000000..7b990aa
+--- /dev/null
++++ b/debian/rtl8723ds-mp-driver-common.README.Debian
+@@ -0,0 +1,13 @@
++Important note
++==============
++
++This driver from conflicts with r8723ds module, so we have to blacklist
++the following modules:
++ * r8723ds, rtl8723ds driver being cleaned for upstreaming
++
++This is done in /etc/modprobe.d/rtl8723ds-mp-driver-common.conf file, you also
++should rebuild initrd file with the following command:
++
++        # update-initramfs -u -k `uname -r`
++
++ -- Jason Abele <jason@nextthing.co>  Wed, 14 Dec 2016 16:47:15 -0800
+diff --git a/debian/rtl8723ds-mp-driver-common.modprobe b/debian/rtl8723ds-mp-driver-common.modprobe
+new file mode 100644
+index 0000000..7eb8409
+--- /dev/null
++++ b/debian/rtl8723ds-mp-driver-common.modprobe
+@@ -0,0 +1,3 @@
++# 8723ds module conflicts with r8723ds
++# We must blacklist the following modules:
++blacklist r8723ds
+diff --git a/debian/rtl8723ds-mp-driver-common.postinst b/debian/rtl8723ds-mp-driver-common.postinst
+new file mode 100644
+index 0000000..13f55ba
+--- /dev/null
++++ b/debian/rtl8723ds-mp-driver-common.postinst
+@@ -0,0 +1,44 @@
++#!/bin/sh
++# postinst script for rtl8723ds_mp_driver
++#
++# see: dh_installdeb(1)
++
++set -e
++
++# summary of how this script can be called:
++#        * <postinst> `configure' <most-recently-configured-version>
++#        * <old-postinst> `abort-upgrade' <new version>
++#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
++#          <new-version>
++#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
++#          <failed-install-package> <version> `removing'
++#          <conflicting-package> <version>
++# for details, see http://www.debian.org/doc/debian-policy/ or
++# the debian-policy package
++#
++# quoting from the policy:
++#     Any necessary prompting should almost always be confined to the
++#     post-installation script, and should be protected with a conditional
++#     so that unnecessary prompting doesn't happen if a package's
++#     installation fails and the `postinst' is called with `abort-upgrade',
++#     `abort-remove' or `abort-deconfigure'.
++
++case "$1" in
++    configure)
++        if [ -x /usr/sbin/update-initramfs -a -e /etc/initramfs-tools/initramfs.conf ] ; then
++            update-initramfs -u
++        fi
++        exit 0
++    ;;
++    *)
++        echo "postinst called with unknown argument \`$1'" >&2
++        exit 1
++    ;;
++esac
++
++# dh_installdeb will replace this with shell code automatically
++# generated by other debhelper scripts.
++
++#DEBHELPER#
++
++exit 0
+diff --git a/debian/rtl8723ds-mp-driver-dkms.README.Debian b/debian/rtl8723ds-mp-driver-dkms.README.Debian
+new file mode 100644
+index 0000000..bc5bd6b
+--- /dev/null
++++ b/debian/rtl8723ds-mp-driver-dkms.README.Debian
+@@ -0,0 +1,18 @@
++Important note
++==============
++
++Driver from Realtek conflicts with the following modules:
++ * rtl8723ds, Realtek driver being cleaned for upstream
++
++These modules are blacklisted in the
++/etc/modprobe.d/rtl8723ds-mp-driver-dkms.conf file, initrd file is
++automatically rebuilt by dkms but you need to restart your computer at the
++first installation.
++
++Please note that any network card that requires b44 module will not work until
++rtl8723ds-mp-driver-dkms is installed.
++
++The plan is to create an upstream driver in the linux kernel.  When that works,
++consider using one of the upstream drivers instead.
++
++ -- Jason Abele <jason@nextthing.co>  Wed, 14 Dec 2016 16:47:15 -0800
+diff --git a/debian/rtl8723ds-mp-driver-dkms.dkms b/debian/rtl8723ds-mp-driver-dkms.dkms
+new file mode 100644
+index 0000000..c5eed4b
+--- /dev/null
++++ b/debian/rtl8723ds-mp-driver-dkms.dkms
+@@ -0,0 +1,7 @@
++PACKAGE_NAME="rtl8723ds-mp-driver"
++PACKAGE_VERSION="#MODULE_VERSION#"
++MAKE[0]="make KVER=$kernelver"
++BUILT_MODULE_NAME[0]="8723ds"
++DEST_MODULE_LOCATION[0]="/extra"
++AUTOINSTALL="YES"
++REMAKE_INITRD="YES"
+diff --git a/debian/rtl8723ds-mp-driver-dkms.modprobe b/debian/rtl8723ds-mp-driver-dkms.modprobe
+new file mode 100644
+index 0000000..c7f528c
+--- /dev/null
++++ b/debian/rtl8723ds-mp-driver-dkms.modprobe
+@@ -0,0 +1,2 @@
++# 8723ds module conflicts with the following modules:
++blacklist r8723ds
+diff --git a/debian/rtl8723ds-mp-driver-source.NEWS b/debian/rtl8723ds-mp-driver-source.NEWS
+new file mode 100644
+index 0000000..5b184b1
+--- /dev/null
++++ b/debian/rtl8723ds-mp-driver-source.NEWS
+@@ -0,0 +1,3 @@
++rtl823ds-mp-driver (5.1.1.2-18132.20160706-BTCOEX20160510-0909-ntc-1) stable; urgency=low
++
++ -- Jason Abele <jason@nextthing.co>  Wed, 14 Dec 2016 16:47:15 -0800
+diff --git a/debian/rtl8723ds-mp-driver-source.README.Debian b/debian/rtl8723ds-mp-driver-source.README.Debian
+new file mode 100644
+index 0000000..6375fb3
+--- /dev/null
++++ b/debian/rtl8723ds-mp-driver-source.README.Debian
+@@ -0,0 +1,23 @@
++rtl8723ds-mp-driver for Debian
++==============================================
++
++RTL8723BS MP Driver is adevice driver to support the IEEE 802.11b/g/n
++rtl8723ds SDIO wireless network card.
++
++You also need to get the necessary user-space support programs.
++
++The Debian rtl8723ds-mp-driver-source package can be used in several ways,
++
++ * Using module-assistant(8) commands provided by the module-assistant Debian
++   package:
++
++        # module-assistant prepare rtl8723ds-mp-driver
++        # module-assistant auto-install rtl8723ds-mp-driver
++
++ * Using the make-kpkg(1) command provided by the kernel-package Debian
++   package. See the "modules_image" section of the make-kpkg(1) man page.
++
++ * Unpacking /usr/src/rtl8723ds-mp-driver-*.tar.xz and installing the module on your
++   own.
++
++ -- Jason Abele <jason@nextthing.co>  Wed, 14 Dec 2016 16:47:15 -0800
+diff --git a/debian/rules b/debian/rules
+new file mode 100755
+index 0000000..6a08846
+--- /dev/null
++++ b/debian/rules
+@@ -0,0 +1,49 @@
++#!/usr/bin/make -f
++
++#export DH_VERBOSE=1
++
++version         := $(shell dpkg-parsechangelog | sed -nr '/^Version:/s/Version: (.*:)?(.*)-(.*)/\2/p')
++
++source_name     := rtl8723ds-mp-driver
++source_package  := $(source_name)-source
++source_target   := usr/src/modules/$(source_name)
++source_debdir   := debian/$(source_package)/$(source_target)/debian
++
++dkms_package    := $(source_name)-dkms
++dkms_target     := usr/src/$(source_name)-$(version)
++
++%:
++	dh $@ --with dkms
++
++install-dkms:
++	dh_installdirs -p $(dkms_package) $(dkms_target)
++
++install-source:
++	dh_installdirs -p $(source_package) $(source_target)
++	# Copy only the driver source to the proper location
++	dh_install -p $(source_package) clean $(source_target)
++	dh_install -p $(source_package) Kconfig $(source_target)
++	dh_install -p $(source_package) os_dep $(source_target)
++	dh_install -p $(source_package) core $(source_target)
++	dh_install -p $(source_package) hal $(source_target)
++	dh_install -p $(source_package) include $(source_target)
++	dh_install -p $(source_package) Makefile $(source_target)
++	dh_install -p $(source_package) platform $(source_target)
++	#dh_install -p $(source_package) debian/patches $(source_target)/debian
++
++	# Copy Debian files
++	install -D -m 0755 debian/rules.modules $(source_debdir)/rules
++	for file in changelog compat control control.modules.in; do \
++		install -m 644 debian/$$file $(source_debdir); \
++	done
++
++	# Make suitable tarball for module-assisant and kernel-package
++	#cd debian/$(source_package)/usr/src && tar cfJ $(source_name).tar.xz modules && rm -rf modules
++
++override_dh_install: install-dkms install-source
++
++override_dh_dkms:
++	dh_dkms -V $(version)
++
++# do nothing
++override_dh_auto_configure override_dh_auto_build override_dh_auto_test override_dh_auto_install override_dh_auto_clean:
+diff --git a/debian/rules.modules b/debian/rules.modules
+new file mode 100644
+index 0000000..e89161c
+--- /dev/null
++++ b/debian/rules.modules
+@@ -0,0 +1,50 @@
++#!/usr/bin/make -f
++
++# module-assistant stuff
++PACKAGE = rtl8723ds-mp-driver-modules
++MA_DIR ?= /usr/share/modass
++-include $(MA_DIR)/include/generic.make
++-include $(MA_DIR)/include/common-rules.make
++
++include /usr/share/dpkg/buildflags.mk
++
++CROSS_COMPILE:=
++DEB_BUILD_GNU_TYPE := $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
++DEB_HOST_GNU_TYPE  := $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
++ifneq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
++	CC=$(DEB_HOST_GNU_TYPE)-gcc
++	CROSS_COMPILE:=$(DEB_HOST_GNU_TYPE)-
++endif
++
++ARCH:=$(shell dpkg-architecture -qDEB_HOST_ARCH_CPU)
++
++export CC ARCH CROSS_COMPILE
++
++USER_EXTRA_CFLAGS+=-DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
++USER_EXTRA_CFLAGS+=-DCONFIG_CONCURRENT_MODE -DCONFIG_MP_INCLUDED
++USER_EXTRA_CFLAGS+=-DCONFIG_WIFI_MONITOR=y
++
++kdist_clean: prep-deb-files
++	dh_clean
++	$(MAKE) clean KBUILD=$(KSRC) KVER=$(KVERS)
++
++kdist_config: prep-deb-files
++
++binary-modules: kdist_config
++	dh_testdir
++	dh_testroot
++	dh_prep
++	# Build and install the module
++	$(MAKE) KSRC=$(KSRC) USER_EXTRA_CFLAGS="$(USER_EXTRA_CFLAGS)" modules
++	# Install the module
++	$(MAKE) KSRC=$(KSRC) PREFIX=$(CURDIR)/debian/$(PKGNAME) modules_install
++	rm -f $(CURDIR)/debian/$(PKGNAME)/lib/modules/$(KVERS)/m*
++	dh_installdocs
++	dh_installchangelogs
++	dh_installmodules
++	dh_compress
++	dh_fixperms
++	dh_installdeb
++	dh_gencontrol -- -v$(VERSION)
++	dh_md5sums
++	dh_builddeb --destdir=$(DEB_DESTDIR)
+diff --git a/debian/source/format b/debian/source/format
+new file mode 100644
+index 0000000..163aaf8
+--- /dev/null
++++ b/debian/source/format
+@@ -0,0 +1 @@
++3.0 (quilt)
+-- 
+2.7.4
+

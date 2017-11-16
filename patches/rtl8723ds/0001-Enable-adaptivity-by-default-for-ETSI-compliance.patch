@@ -1,0 +1,25 @@
+From 7095ba1f99597d8e552ba0a1cceee9e865e6e06c Mon Sep 17 00:00:00 2001
+From: Jason Abele <jason@nextthing.co>
+Date: Sun, 11 Dec 2016 11:56:11 -0800
+Subject: [PATCH 1/3] Enable adaptivity by default for ETSI compliance
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index a702d64..2c8bed5 100644
+--- a/Makefile
++++ b/Makefile
+@@ -56,7 +56,7 @@ CONFIG_TRAFFIC_PROTECT = y
+ CONFIG_LOAD_PHY_PARA_FROM_FILE = y
+ CONFIG_CALIBRATE_TX_POWER_BY_REGULATORY = n
+ CONFIG_CALIBRATE_TX_POWER_TO_MAX = n
+-CONFIG_RTW_ADAPTIVITY_EN = disable
++CONFIG_RTW_ADAPTIVITY_EN = enable
+ CONFIG_RTW_ADAPTIVITY_MODE = normal
+ CONFIG_SIGNAL_SCALE_MAPPING = n
+ CONFIG_80211W = n
+-- 
+2.7.4
+
