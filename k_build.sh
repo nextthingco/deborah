@@ -10,7 +10,7 @@ LINUX_CONFIG=defconfig
 BUILD_NUMBER=2
 
 ## KERNEL
-function linx() {
+function linux() {
     git clone --branch ${LINUX_BRANCH} --single-branch --depth 1 ${LINUX_REPO} linux
     pushd linux
     git clean -xfd .
