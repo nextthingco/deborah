@@ -2,6 +2,7 @@
 
 LINUX_DPK_FILE=$PWD/.linux_dpk
 echo "$LINUX_DEPLOY_PRIVATE_KEY" >"${LINUX_DPK_FILE}"
+chmod 0600 "${LINUX_DPK_FILE}"
 
 export GIT_SSH_COMMAND="ssh -i ${LINUX_DPK_FILE} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
