@@ -1,10 +1,10 @@
 ##!/bin/bash
 
 eval $(ssh-agent -s)
-ssh-add <(echo "$SSH_PRIVATE_KEY")
+ssh-add <(echo "$LINUX_DEPLOY_PRIVATE_KEY")
 
-#LINUX_DPK_FILE=$PWD/.linux_dpk
-#echo "$LINUX_DEPLOY_PRIVATE_KEY" >"${LINUX_DPK_FILE}"
+LINUX_DPK_FILE=$PWD/.linux_dpk
+echo "$LINUX_DEPLOY_PRIVATE_KEY" >"${LINUX_DPK_FILE}"
 #chmod 0600 "${LINUX_DPK_FILE}"
 
 export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
