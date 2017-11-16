@@ -9,10 +9,6 @@ stages:
 variables:
   CONTAINER_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH:docker
 
-before_script:
-    - export LINUX_DEPLOY_PRIVATE_KEY
-    - echo $LINUX_DEPLOY_PRIVATE_KEY
-
 build:
   stage: build
   script:
