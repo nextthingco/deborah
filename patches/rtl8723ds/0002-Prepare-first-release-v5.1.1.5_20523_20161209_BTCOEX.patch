@@ -1,7 +1,7 @@
-From 470f5b1ff77c77638d2a5d5424396e837e46670b Mon Sep 17 00:00:00 2001
+From aa79a8fa0a6c966c7730e6d5b8179b6533e54276 Mon Sep 17 00:00:00 2001
 From: Jason Abele <jason@nextthing.co>
 Date: Wed, 14 Dec 2016 16:43:23 -0800
-Subject: [PATCH 3/3] Prepare first release
+Subject: [PATCH 2/2] Prepare first release
  v5.1.1.5_20523_20161209_BTCOEX20161208-1212
 
 ---
@@ -59,7 +59,7 @@ index 0000000..b3e47d1
 +
 diff --git a/debian/changelog b/debian/changelog
 new file mode 100644
-index 0000000..52a95f4
+index 0000000..fdc03f7
 --- /dev/null
 +++ b/debian/changelog
 @@ -0,0 +1,5 @@
