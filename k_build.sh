@@ -70,7 +70,7 @@ function wifi() {
     sudo dpkg -i ../rtl8723ds-mp-driver-source_${RTL_VER}_all.deb
     
     mkdir -p $BUILDDIR/usr_src
-    export CC=${CROSS_COMPILE}-gcc
+    export CC=${CROSS_COMPILE}gcc
     export $(dpkg-architecture -a${ARCH})
     export KERNEL_VER=$(cd $LINUX_SRCDIR; make kernelversion)
     
