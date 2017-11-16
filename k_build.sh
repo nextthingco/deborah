@@ -60,6 +60,9 @@ function wifi() {
     git clean -xfd .
     git checkout .
 
+    git config user.email "${DEBEMAIL}"
+    git config user.name "${DEBFULLNAME}"
+ 
     git am "$RTL8723DS_PATCHDIR"/*
     
     dpkg-buildpackage -A -uc -us -nc
@@ -95,5 +98,5 @@ function bluetooth() {
     popd
 }
 
-linux
+#linux
 wifi
