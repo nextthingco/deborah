@@ -25,6 +25,7 @@ export CROSS_COMPILE=aarch64-linux-gnu-
 ## KERNEL
 function linux() {
     git clone --branch ${LINUX_BRANCH} --single-branch --depth 1 ${LINUX_REPO} "${LINUX_SRCDIR}"
+    return
     pushd "${LINUX_SRCDIR}"
 
     git clean -xfd .
@@ -53,9 +54,6 @@ function linux() {
 function wifi() {
     git clone --branch ${RTL8723DS_BRANCH} --single-branch --depth 1 ${RTL8723DS_REPO} "${RTL8723DS_SRCDIR}"
 
-    export BUILDDIR="${RTL8723DS_SRCDIR}/build"
-    export RTL_VER=$(cd $RTL8723DS_SRCDIR; dpkg-parsechangelog --show-field Version)
-    
     pushd $RTL8723DS_SRCDIR
     git clean -xfd .
     git checkout .
@@ -65,6 +63,9 @@ function wifi() {
  
     git am "$RTL8723DS_PATCHDIR"/*
     
+    export BUILDDIR="${RTL8723DS_SRCDIR}/build"
+    export RTL_VER=$(cd $RTL8723DS_SRCDIR; dpkg-parsechangelog --show-field Version)
+
     dpkg-buildpackage -A -uc -us -nc
     sudo dpkg -i ../rtl8723ds-mp-driver-source_${RTL_VER}_all.deb
     
@@ -98,5 +99,5 @@ function bluetooth() {
     popd
 }
 
-#linux
+linux
 wifi
