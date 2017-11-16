@@ -20,5 +20,5 @@ build:
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker pull $CONTAINER_IMAGE
-    - docker run --rm -it -v $PWD:/work -w /work $CONTAINER_IMAGE ./k_build.sh
+    - docker run --rm -t -v $PWD:/work -w /work $CONTAINER_IMAGE ./k_build.sh
 
