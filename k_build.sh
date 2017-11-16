@@ -1,4 +1,4 @@
-##!/bin/bash
+#!/bin/bash
 
 eval $(ssh-agent -s)
 ssh-add <(echo "$LINUX_DEPLOY_PRIVATE_KEY")
@@ -101,3 +101,5 @@ function bluetooth() {
 
 linux
 wifi
+
+find . -name "*.deb"
