@@ -4,8 +4,8 @@ LINUX_BRANCH=${LINUX_BRANCH:-chip4-4.13.y}
   LINUX_REPO=${LINUX_REPO:-git@github.com:nextthingco/chip4-linux}
 LINUX_CONFIG=defconfig
 
-git clone -b debian https://github.com/nextthingco/RTL8723DS
-git clone -b debian https://github.com/nextthingco/rtl8723ds_bt
+#git clone -b debian https://github.com/nextthingco/RTL8723DS
+#git clone -b debian https://github.com/nextthingco/rtl8723ds_bt
 
 BUILD_NUMBER=2
 
@@ -86,4 +86,4 @@ function bluetooth() {
     popd
 }
 
-linux()
+linux
