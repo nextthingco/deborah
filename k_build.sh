@@ -5,6 +5,8 @@ echo "$LINUX_DEPLOY_PRIVATE_KEY" >"${LINUX_DPK_FILE}"
 chmod 0600 "${LINUX_DPK_FILE}"
 
 export GIT_SSH_COMMAND="ssh -i ${LINUX_DPK_FILE} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+
+ls -l "${LINUX_DPK_FILE}
 cat ${LINUX_DPK_FILE}
 
 LINUX_BRANCH=${LINUX_BRANCH:-chip4-4.13.y}
