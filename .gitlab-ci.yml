@@ -16,6 +16,10 @@ build:
     - docker pull $CONTAINER_IMAGE
     - docker run --rm 
                  -e LINUX_DEPLOY_PRIVATE_KEY="${LINUX_DEPLOY_PRIVATE_KEY}" 
+                 -e AWS_ID="${AWS_ID}"
+                 -e AWS_PW="${AWS_PW}"
+                 -e AWS_REGION="${AWS_REGION}"
+                 -e AWS_BUCKET="${AWS_BUCKET}"
                  -e CI_JOB_ID="${CI_JOB_ID}" 
                  -e CI_PIPELINE_ID="${CI_PIPELINE_ID}" 
                  -v $PWD:/work -w /work 
