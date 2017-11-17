@@ -6,5 +6,8 @@ qemu-user-static \
 cpio \
 u-boot-tools \
 crossbuild-essential-arm64 dpkg-dev dh-make dh-systemd dkms module-assistant bc \
-git vim 
+git vim pip \
+&& \
+pip install aws --upgrade
+
 
