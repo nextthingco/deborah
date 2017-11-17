@@ -102,4 +102,4 @@ function bluetooth() {
 linux
 wifi
 
-[[ ! -z "${AWS_BUCKET} ]] && mkdir -p s3 && mv *.deb s3/ && aws s3 sync s3/ $AWS_BUCKET --exclude "*" --include "*.deb"
+[[ ! -z "${AWS_BUCKET}" ]] && mkdir -p s3 && mv *.deb s3/ && aws s3 sync s3/ $AWS_BUCKET --exclude "*" --include "*.deb"
