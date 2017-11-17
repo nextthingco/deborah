@@ -108,11 +108,11 @@ function createrepo()  {
 	export COMPONENTS="${COMPONENTS:-main}"
 	export DESCRIPTION="${DESCRIPTION:-Kernel and driver packages for NTC CHIP 4}"
 	
-	TEMPLATE="${TEMPLATE:-distributions.template}"
+	TEMPLATE="${TEMPLATE:-$PWD/distributions.template}"
 	REPOPATH="${REPOPATH:-$PWD/repo}"
 	DEBSPATH="${DEBSPATH:-$PWD}"
 	
-	mkdir -p "${REPO}/{conf,incoming}"
+	mkdir -p "${REPOPATH}"/{conf,incoming}
 	
 	envsubst <"${TEMPLATE}" >"${REPOPATH}/conf/distributions"
 	pushd "${REPOPATH}"
@@ -126,7 +126,6 @@ function upload_to_s3()
 	REMOTEBUCKET=$2
 	PATTERN=$3
 
-	echo aws s3 sync "${LOCALPATH}" "${REMOTEBUCKET}" --exclude "*" --include "${PATTERN}"
 	aws s3 sync "${LOCALPATH}" "${REMOTEBUCKET}" --exclude "*" --include "${PATTERN}"
 }
 
