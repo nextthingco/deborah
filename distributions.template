@@ -1,0 +1,7 @@
+Origin: ${ORIGIN}
+Label: ${LABEL}
+Suite: ${SUITE}
+Codename: ${CODENAME}
+Architectures: ${ARCH}
+Components: ${COMPONENTS}
+Description: ${DESCRIPTION}

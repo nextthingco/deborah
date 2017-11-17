@@ -99,7 +99,39 @@ function bluetooth() {
     popd
 }
 
+function createrepo()  {
+	export ORIGIN="${ORIGIN:-NTC}"
+	export LABEL="${LABEL:-NTC CHIP4}"
+	export SUITE="${SUITE:-stable}"
+	export CODENAME="${CODENAME:-stretch}"
+	export ARCH="${ARCH:-arm64}"
+	export COMPONENTS="${COMPONENTS:-main}"
+	export DESCRIPTION="${DESCRIPTION:-Kernel and driver packages for NTC CHIP 4}"
+	
+	TEMPLATE="${TEMPLATE:-distributions.template}"
+	REPOPATH="${REPOPATH:-$PWD/repo}"
+	DEBSPATH="${DEBSPATH:-$PWD}"
+	
+	mkdir -p "${REPO}/{conf,incoming}"
+	
+	envsubst <"${TEMPLATE}" >"${REPOPATH}/conf/distributions"
+	pushd "${REPOPATH}"
+	reprepro includedeb "${CODENAME}" "${DEBSPATH}"/*.deb
+	popd
+}
+
+function upload_to_s3()
+{
+	LOCALPATH=$1
+	REMOTEBUCKET=$2
+	PATTERN=$3
+
+	echo aws s3 sync "${LOCALPATH}" "${REMOTEBUCKET}" --exclude "*" --include "${PATTERN}"
+	aws s3 sync "${LOCALPATH}" "${REMOTEBUCKET}" --exclude "*" --include "${PATTERN}"
+}
+
 linux
 wifi
 
-[[ ! -z "${AWS_BUCKET}" ]] && mkdir -p s3 && mv *.deb s3/ && aws s3 sync s3/ $AWS_BUCKET --exclude "*" --include "*.deb"
+createrepo
+upload_to_s3 ${REPOPATH} ${AWS_BUCKET} "*.deb"
