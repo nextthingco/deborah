@@ -14,10 +14,10 @@ build:
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker pull $CONTAINER_IMAGE
-    - docker run --rm \
-                 -e LINUX_DEPLOY_PRIVATE_KEY="${LINUX_DEPLOY_PRIVATE_KEY}" \
-                 -e CI_JOB_ID="${CI_JOB_ID}" \
-                 -e CI_PIPELINE_ID="${CI_PIPELINE_ID}" \
-                 -v $PWD:/work -w /work \
+    - docker run --rm 
+                 -e LINUX_DEPLOY_PRIVATE_KEY="${LINUX_DEPLOY_PRIVATE_KEY}" 
+                 -e CI_JOB_ID="${CI_JOB_ID}" 
+                 -e CI_PIPELINE_ID="${CI_PIPELINE_ID}" 
+                 -v $PWD:/work -w /work 
                  $CONTAINER_IMAGE /bin/bash -c /work/k_build.sh
 
