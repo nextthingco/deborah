@@ -5,7 +5,7 @@ debootstrap \
 qemu-user-static \
 cpio \
 u-boot-tools \
-crossbuild-essential-arm64 dpkg-dev dh-make dh-systemd dkms module-assistant bc \
+crossbuild-essential-arm64 dpkg-dev dh-make dh-systemd dkms module-assistant bc reprepro \
 git vim python-pip \
 && \
 pip install awscli --upgrade
