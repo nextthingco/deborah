@@ -17,7 +17,7 @@ RTL8723DS_SRCDIR="$PWD/rtl8723ds"
 RTL8723DS_PATCHDIR="$PWD/patches/rtl8723ds"
 #git clone -b debian https://github.com/nextthingco/rtl8723ds_bt
 
-BUILD_NUMBER=2
+export BUILD_NUMBER=${CI_JOB_ID}
 export CONCURRENCY_LEVEL=$(( $(nproc) * 2 ))
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
