@@ -20,4 +20,6 @@ build:
                  -e CI_PIPELINE_ID="${CI_PIPELINE_ID}" 
                  -v $PWD:/work -w /work 
                  $CONTAINER_IMAGE /bin/bash -c /work/k_build.sh
-
+  artifacts:
+    paths:
+      - *.deb
