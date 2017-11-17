@@ -126,7 +126,7 @@ function upload_to_s3()
 	REMOTEBUCKET=$2
 	PATTERN=$3
 
-	aws s3 sync "${LOCALPATH}" "${REMOTEBUCKET}" --exclude "*" --include "${PATTERN}"
+	aws s3 sync --no-progress --acl public-read "${LOCALPATH}" "${REMOTEBUCKET}" --exclude "*" --include "${PATTERN}"
 }
 
 linux
