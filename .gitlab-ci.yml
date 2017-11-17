@@ -22,4 +22,4 @@ build:
                  $CONTAINER_IMAGE /bin/bash -c /work/k_build.sh
   artifacts:
     paths:
-      - *.deb
+      - ./*.deb
