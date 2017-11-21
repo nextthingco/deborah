@@ -2,3 +2,24 @@
 
 This Gitlab project builds a Debian image for CHIP4.
 
+The followning environment variables are used by k_build (it will fail if they are not set correctly):
+
+  - AWS_BUCKET: S3 bucket name where repository is published
+  - AWS_REGION: AWS region for S3 bucket
+  - AWS_ACCES_KEY_ID: AWS id
+  - AWS_SECRET_ACCESS_KEY: secret AWS key
+  - LINUX_DEPLOY_PRIVATE_KEY: unencrypted ssh key to access Linux repository (see 'How to use private Linux Git repository' below)
+  - GPG_PRIVATE_KEY: unencrypted gpg secret key used for repository signing (see 'How to use create signed Debian repository' below)
+
+## How to publish repository on S3
+
+TODO:
+ - create a public bucket accessible via https
+ - create a user & role (give role example)
+
+## How to use private Linux Git repository
+Sometime it's not possible make the Linux repository public, because of support for still top-secret product in there.
+
+
+## How to create signed Debian repository
+
