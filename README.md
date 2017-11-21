@@ -48,7 +48,8 @@ In Github the corresponding public key needs to be added as a deployment key.
 
 In order to create a signed repository, the  `GPG_PRIVATE_KEY` variable needs to
 contain an *unencrypted* GPG secret key.
-Using `gpg` version 2 this can be done using these commands:
+Using `gpg` version 2, an unencrypted GPG secret key can be created and
+exported using these commands:
 ```
 gpg --pinentry-mode loopback --full-generate-key
 gpg --export-secret-key --armor >secret.key
