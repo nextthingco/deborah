@@ -10,9 +10,9 @@ LINUX_BRANCH=${LINUX_BRANCH:-chip4-4.13.y}
 LINUX_CONFIG=${LINUX_CONFIG:-chip4_defconfig}
 LINUX_SRCDIR="$PWD/linux"
 
-RTL8723DS_BRANCH=${RTL8723DS_BRANCH:-master}
-  RTL8723DS_REPO=${RTL8723DS_REPO:-https://github.com/lwfinger/rtl8723ds}
-RTL8723DS_SRCDIR="$PWD/rtl8723ds"
+  RTL8723DS_BRANCH=${RTL8723DS_BRANCH:-master}
+    RTL8723DS_REPO=${RTL8723DS_REPO:-https://github.com/lwfinger/rtl8723ds}
+  RTL8723DS_SRCDIR="$PWD/rtl8723ds"
 RTL8723DS_PATCHDIR="$PWD/patches/rtl8723ds"
 #git clone -b debian https://github.com/nextthingco/rtl8723ds_bt
 
@@ -114,7 +114,12 @@ function createrepo()  {
 
     mkdir -p "${REPOPATH}"/{conf,incoming}
 
-    gpg --import <(echo "${GPG_PRIVATE_KEY}")
+    if [[ -z "${GPG_PRIVATE_KEY}" ]]; then
+        echo "No private GPG key given -> SKIP signing"
+    else
+        gpg --import <(echo "${GPG_PRIVATE_KEY}")
+        export SIGNWITH="SignWith: default" 
+    fi
 
     envsubst <"${TEMPLATE}" >"${REPOPATH}/conf/distributions"
     pushd "${REPOPATH}"
@@ -125,14 +130,14 @@ function createrepo()  {
 function upload_to_s3()
 {
 	LOCALPATH=$1
-	REMOTEBUCKET=$2
-	PATTERN=$3
+	PATTERN=$2
 
-	aws s3 sync --no-progress --acl public-read "${LOCALPATH}" "${REMOTEBUCKET}" --exclude "*" --include "${PATTERN}"
+    [[ -z "${AWS_BUCKET}" || -z "${AWS_REGION}" || -z "${AWS_ACCESS_KEY_ID}" || -z "${AWS_SECRET_ACCESS_KEY}" ]] && echo "S3 upload: missing variables -> SKIP" && return
+	aws s3 sync --no-progress --acl public-read "${LOCALPATH}" "${AWS_BUCKET}" --exclude "*" --include "${PATTERN}"
 }
 
-linux
-wifi
+#linux
+#wifi
 
 createrepo
-upload_to_s3 ${REPOPATH} ${AWS_BUCKET} "*"
+upload_to_s3 ${REPOPATH} "*"
