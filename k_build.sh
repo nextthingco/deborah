@@ -4,7 +4,6 @@ eval $(ssh-agent -s)
 ssh-add <(echo "$LINUX_DEPLOY_PRIVATE_KEY")
 
 export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-#export GIT_SSH_COMMAND="ssh -i ${LINUX_DPK_FILE} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 LINUX_BRANCH=${LINUX_BRANCH:-chip4-4.13.y}
   LINUX_REPO=${LINUX_REPO:-git@github.com:nextthingco/chip4-linux}
@@ -62,18 +61,18 @@ function wifi() {
     git config user.name "${DEBFULLNAME}"
  
     git am "$RTL8723DS_PATCHDIR"/*
-    
+
     export BUILDDIR="${RTL8723DS_SRCDIR}/build"
     export RTL_VER=$(cd $RTL8723DS_SRCDIR; dpkg-parsechangelog --show-field Version)
 
     dpkg-buildpackage -A -uc -us -nc
     sudo dpkg -i ../rtl8723ds-mp-driver-source_${RTL_VER}_all.deb
-    
+
     mkdir -p $BUILDDIR/usr_src
     export CC=${CROSS_COMPILE}gcc
     export $(dpkg-architecture -a${ARCH})
     export KERNEL_VER=$(cd $LINUX_SRCDIR; make kernelversion)
-    
+
     cp -a /usr/src/modules/rtl8723ds-mp-driver/* $BUILDDIR
     pushd /usr/src
     sudo tar -zcvf rtl8723ds-mp-driver.tar.gz modules/rtl8723ds-mp-driver
@@ -99,25 +98,28 @@ function bluetooth() {
     popd
 }
 
+
 function createrepo()  {
-	export ORIGIN="${ORIGIN:-NTC}"
-	export LABEL="${LABEL:-NTC CHIP4}"
-	export SUITE="${SUITE:-stable}"
-	export CODENAME="${CODENAME:-stretch}"
-	export ARCH="${ARCH:-arm64}"
-	export COMPONENTS="${COMPONENTS:-main}"
-	export DESCRIPTION="${DESCRIPTION:-Kernel and driver packages for NTC CHIP 4}"
-	
-	TEMPLATE="${TEMPLATE:-$PWD/distributions.template}"
-	REPOPATH="${REPOPATH:-$PWD/repo}"
-	DEBSPATH="${DEBSPATH:-$PWD}"
-	
-	mkdir -p "${REPOPATH}"/{conf,incoming}
-	
-	envsubst <"${TEMPLATE}" >"${REPOPATH}/conf/distributions"
-	pushd "${REPOPATH}"
-	reprepro includedeb "${CODENAME}" "${DEBSPATH}"/*.deb
-	popd
+    export ORIGIN="${ORIGIN:-NTC}"
+    export LABEL="${LABEL:-NTC CHIP4}"
+    export SUITE="${SUITE:-stable}"
+    export CODENAME="${CODENAME:-stretch}"
+    export ARCH="${ARCH:-arm64}"
+    export COMPONENTS="${COMPONENTS:-main}"
+    export DESCRIPTION="${DESCRIPTION:-Kernel and driver packages for NTC CHIP 4}"
+
+    TEMPLATE="${TEMPLATE:-$PWD/distributions.template}"
+    REPOPATH="${REPOPATH:-$PWD/repo}"
+    DEBSPATH="${DEBSPATH:-$PWD}"
+
+    mkdir -p "${REPOPATH}"/{conf,incoming}
+
+    gpg --import <(echo "${GPG_PRIVATE_KEY}")
+
+    envsubst <"${TEMPLATE}" >"${REPOPATH}/conf/distributions"
+    pushd "${REPOPATH}"
+    reprepro --ask-passphrase includedeb "${CODENAME}" "${DEBSPATH}"/*.deb
+    popd
 }
 
 function upload_to_s3()
@@ -133,4 +135,4 @@ linux
 wifi
 
 createrepo
-upload_to_s3 ${REPOPATH} ${AWS_BUCKET} "*.deb"
+upload_to_s3 ${REPOPATH} ${AWS_BUCKET} "*"

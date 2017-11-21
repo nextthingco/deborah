@@ -16,6 +16,7 @@ build:
     - docker pull $CONTAINER_IMAGE
     - docker run --rm 
                  -e LINUX_DEPLOY_PRIVATE_KEY="${LINUX_DEPLOY_PRIVATE_KEY}" 
+                 -e GPG_PRIVATE_KEY="${GPG_PRIVATE_KEY}"
                  -e AWS_ACCESS_KEY_ID="${AWS_ID}"
                  -e AWS_SECRET_ACCESS_KEY="${AWS_PW}"
                  -e AWS_REGION="${AWS_REGION}"

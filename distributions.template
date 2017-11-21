@@ -5,3 +5,4 @@ Codename: ${CODENAME}
 Architectures: ${ARCH}
 Components: ${COMPONENTS}
 Description: ${DESCRIPTION}
+SignWith: default
