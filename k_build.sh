@@ -136,8 +136,8 @@ function upload_to_s3()
 	aws s3 sync --no-progress --acl public-read "${LOCALPATH}" "${AWS_BUCKET}" --exclude "*" --include "${PATTERN}"
 }
 
-#linux
-#wifi
+linux
+wifi
 
 createrepo
 upload_to_s3 ${REPOPATH} "*"
