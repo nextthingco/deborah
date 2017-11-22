@@ -142,7 +142,7 @@ function upload_to_s3()
 	PATTERN=$2
 
     [[ -z "${AWS_BUCKET}" || -z "${AWS_REGION}" || -z "${AWS_ACCESS_KEY_ID}" || -z "${AWS_SECRET_ACCESS_KEY}" ]] && echo "S3 upload: missing variables -> SKIP" && return
-	aws s3 rm --no-progress --recursive "${AWS_BUCKET}"
+	aws s3 rm --recursive "${AWS_BUCKET}"
 	aws s3 sync --no-progress --acl public-read "${LOCALPATH}" "${AWS_BUCKET}" --exclude "*" --include "${PATTERN}"
 }
 
