@@ -1,7 +1,13 @@
 #!/bin/bash
 
-eval $(ssh-agent -s)
-ssh-add <(echo "$LINUX_DEPLOY_PRIVATE_KEY")
+set -e
+
+if [[ -z "$LINUX_DEPLOY_PRIVATE_KEY" ]]; then
+   echo "LINUX_DEPLOY_PRIVATE_KEY is not set -> skip"
+else
+    eval $(ssh-agent -s)
+    ssh-add <(echo "$LINUX_DEPLOY_PRIVATE_KEY")
+fi
 
 export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
