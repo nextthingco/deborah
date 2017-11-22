@@ -15,7 +15,10 @@ build:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker pull $CONTAINER_IMAGE
     - docker run --rm 
-                 -e LINUX_DEPLOY_PRIVATE_KEY="${LINUX_DEPLOY_PRIVATE_KEY}" 
+                 -e LINUX_DEPLOY_PRIVATE_KEY="${LINUX_DEPLOY_PRIVATE_KEY}"
+                 -e LINUX_BRANCH="${LINUX_BRANCH}"
+                 -e LINUX_REPO="${LINUX_REPO}"
+                 -e LINUX_CONFIG="${LINUX_CONFIG:-chip4_defconfig}"
                  -e GPG_PRIVATE_KEY="${GPG_PRIVATE_KEY}"
                  -e AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
                  -e AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
