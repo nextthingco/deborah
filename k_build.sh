@@ -48,7 +48,10 @@ function linux() {
     git config user.name "${DEBFULLNAME}"
     
     make ${LINUX_CONFIG}
-    
+
+    # remove -gGITREVISION from debian filename
+    sed -i "s|CONFIG_LOCALVERSION_AUTO=.*|CONFIG_LOCALVERSION_AUTO=n|" .config    
+
     make -j${CONCURRENCY_LEVEL} prepare modules_prepare scripts
     make -j${CONCURRENCY_LEVEL} deb-pkg
 
